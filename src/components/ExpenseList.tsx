@@ -4,6 +4,7 @@ import './List.css';
 interface Expense {
   title: string;
   amount: number;
+  members: string[];
 }
 
 interface ExpenseListProps {
@@ -17,9 +18,17 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete,onEdit }) 
     <ul>
       {expenses.map((expense, index) => (
         <li key={index} className="expense-item">
-          <span className="expense-item-title">{expense.title} :</span>
-          <span className="expense-item-amount">RS.{expense.amount.toFixed(2)}</span>
-          
+         <div>
+            <span className="expense-item-title">{expense.title}</span>
+            <span className="expense-item-amount">${expense.amount.toFixed(2)}</span>
+            <div className="expense-item-members">
+              {expense.members.map((member, idx) => (
+                <span key={idx} className="expense-item-member">
+                  {member}
+                </span>
+              ))}
+            </div>
+          </div>
           <button
             className="expense-item-edit"
             onClick={() => onEdit(index)}

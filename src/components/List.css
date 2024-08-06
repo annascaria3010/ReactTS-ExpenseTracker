@@ -6,6 +6,7 @@
   }
   
   .expense-item-title {
+    color: #ccc;
     font-weight: bold;
     padding-right: 15px;
   }

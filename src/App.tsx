@@ -7,6 +7,7 @@ import './App.css';
 interface Expense {
   title: string;
   amount: number;
+  members: string[];
 }
 
 const App: React.FC = () => {
@@ -48,10 +49,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1 className="header">Expense Tracker</h1>
+    <div className='App'>
+      <h1 className="App-header">Expense Tracker</h1>
       {!isGroupCreated ? (
-        <button onClick={handleCreateGroup}>Create Group</button>
+        <button className='Group-button'
+        onClick={handleCreateGroup}>Create Group</button>
       ) : (
         <>
           {isEditing && currentExpenseIndex !== null ? (
