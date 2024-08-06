@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import EditExpenseForm from './components/EditExpense';
-import './App.css';
+import './App.css'; 
 
 interface Expense {
   title: string;
@@ -13,6 +13,7 @@ const App: React.FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentExpenseIndex, setCurrentExpenseIndex] = useState<number | null>(null);
+  const [isGroupCreated, setIsGroupCreated] = useState(false);
 
   const handleAddExpense = (expense: Expense) => {
     setExpenses((prevExpenses) => [...prevExpenses, expense]);
@@ -42,19 +43,33 @@ const App: React.FC = () => {
     setCurrentExpenseIndex(null);
   };
 
+  const handleCreateGroup = () => {
+    setIsGroupCreated(true);
+  };
+
   return (
-    <div className='App'>
-      <h1 className='App-header'>Expense Tracker</h1>
-      {isEditing && currentExpenseIndex !== null ? (
-        <EditExpenseForm
-          expense={expenses[currentExpenseIndex]}
-          onSave={handleSaveExpense}
-          onCancel={handleCancelEdit}
-        />
+    <div>
+      <h1 className="header">Expense Tracker</h1>
+      {!isGroupCreated ? (
+        <button onClick={handleCreateGroup}>Create Group</button>
       ) : (
-      <ExpenseForm onAddExpense={handleAddExpense} />
+        <>
+          {isEditing && currentExpenseIndex !== null ? (
+            <EditExpenseForm
+              expense={expenses[currentExpenseIndex]}
+              onSave={handleSaveExpense}
+              onCancel={handleCancelEdit}
+            />
+          ) : (
+            <ExpenseForm onAddExpense={handleAddExpense} />
+          )}
+          <ExpenseList
+            expenses={expenses}
+            onDelete={handleDeleteExpense}
+            onEdit={handleEditExpense}
+          />
+        </>
       )}
-      <ExpenseList expenses={expenses} onDelete={handleDeleteExpense} onEdit={handleEditExpense}/>
     </div>
   );
 };
