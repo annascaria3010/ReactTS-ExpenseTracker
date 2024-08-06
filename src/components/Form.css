@@ -1,0 +1,32 @@
+.title{
+padding-bottom: 10px;
+font-size: 20px;
+margin-bottom: 1em;
+
+}
+ 
+.amount{
+padding-bottom: 30px;
+font-size: 20px;
+margin-bottom: 1em;
+
+}
+
+.add-button{
+background-color: #09e72a;
+color: white;
+font-size: 20px;
+border: none;
+padding: 0.3em 0.6em;
+cursor: pointer;
+border-radius: 3px;
+}
+
+input {
+    /*width: 100%;  Increase the width of the input box */
+    padding: 0.5em; /* Add padding for a better appearance */
+    font-size: 1em; /* Increase the font size */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 4px; /* Add rounded corners */
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+  }

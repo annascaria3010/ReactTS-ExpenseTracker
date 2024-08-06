@@ -1,0 +1,36 @@
+.expense-item {
+    display: flex;
+    justify-content: center;
+    padding: 0.5em;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .expense-item-title {
+    font-weight: bold;
+    padding-right: 15px;
+  }
+  
+  .expense-item-amount {
+    color: #2a9d8f;
+    padding-right: 25px;
+  }
+  
+  .expense-item-delete {
+    background-color: #fa0404;
+    color: white;
+    border: none;
+    padding: 0.3em 0.6em;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 15px;
+  }
+
+  .expense-item-edit {
+    background-color: #2dfa04;
+    color: white;
+    border: none;
+    padding: 0.3em 0.6em;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 15px;
+  }
