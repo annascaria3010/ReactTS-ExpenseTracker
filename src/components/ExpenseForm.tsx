@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './Form.css'; // Import the CSS file
+import './ExpenseForm.css'; // Import the CSS file
 
 interface ExpenseFormProps {
-  onAddExpense: (expense: { title: string; amount: number }) => void;
+  onAddExpense: (expense: { title: string; amount: number; members?: string[] }) => void;
 }
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAddExpense }) => {
