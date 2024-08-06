@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 interface EditExpenseFormProps {
   expense: { title: string; amount: number; members: string[] };
-  onSave: (updatedExpense: { title: string; amount: number; members: string[]  }) => void;
+  onSave: (updatedExpense: { title: string; amount: number; members: string[] }) => void;
   onCancel: () => void;
 }
 
@@ -16,18 +16,6 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
     setAmount(expense.amount);
     setMembers(expense.members);
   }, [expense]);
-
-  const handleMemberChange = (index: number, value: string) => {
-    const newMembers = [...members];
-    newMembers[index] = value;
-    setMembers(newMembers);
-  };
-
-  const handleAddMember = () => {
-    if (members.length < 6) {
-      setMembers([...members, '']);
-    }
-  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -53,25 +41,7 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
           value={amount}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
         />
-        </div>
-        <div className="form-group">
-        <label>Members</label>
-        {members.map((member, index) => (
-          <input
-            key={index}
-            type="text"
-            value={member}
-            onChange={(e) => handleMemberChange(index, e.target.value)}
-            placeholder={`Member ${index + 1}`}
-          />
-        ))}
-        {members.length < 6 && (
-          <button type="button" onClick={handleAddMember}>
-            Add Member
-          </button>
-        )}
       </div>
-     
       <button type="submit">Save</button>
       <button type="button" onClick={onCancel}>Cancel</button>
     </form>

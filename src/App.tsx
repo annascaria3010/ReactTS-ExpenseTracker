@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import EditExpenseForm from './components/EditExpense';
-import './App.css'; 
+import GroupForm from './components/GroupForm';
+import './App.css'; // Import the CSS file
 
 interface Expense {
   title: string;
@@ -10,14 +11,21 @@ interface Expense {
   members: string[];
 }
 
+interface Group {
+  title: string;
+  members: string[];
+}
+
 const App: React.FC = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [group, setGroup] = useState<Group | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentExpenseIndex, setCurrentExpenseIndex] = useState<number | null>(null);
-  const [isGroupCreated, setIsGroupCreated] = useState(false);
 
-  const handleAddExpense = (expense: Expense) => {
-    setExpenses((prevExpenses) => [...prevExpenses, expense]);
+  const handleAddExpense = (expense: { title: string; amount: number }) => {
+    if (group) {
+      setExpenses((prevExpenses) => [...prevExpenses, { ...expense, members: group.members }]);
+    }
   };
 
   const handleDeleteExpense = (index: number) => {
@@ -44,16 +52,15 @@ const App: React.FC = () => {
     setCurrentExpenseIndex(null);
   };
 
-  const handleCreateGroup = () => {
-    setIsGroupCreated(true);
+  const handleCreateGroup = (newGroup: Group) => {
+    setGroup(newGroup);
   };
 
   return (
-    <div className='App'>
-      <h1 className="App-header">Expense Tracker</h1>
-      {!isGroupCreated ? (
-        <button className='Group-button'
-        onClick={handleCreateGroup}>Create Group</button>
+    <div>
+      <h1 className="header">Expense Tracker</h1>
+      {!group ? (
+        <GroupForm onCreateGroup={handleCreateGroup} />
       ) : (
         <>
           {isEditing && currentExpenseIndex !== null ? (
