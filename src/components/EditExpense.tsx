@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
 interface EditExpenseFormProps {
-  expense: { title: string; amount: number; members: string[] };
-  onSave: (updatedExpense: { title: string; amount: number; members: string[] }) => void;
+  expense: { title: string; amount: number };
+  onSave: (updatedExpense: { title: string; amount: number }) => void;
   onCancel: () => void;
 }
 
 const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCancel }) => {
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(expense.amount);
-  const [members, setMembers] = useState(expense.members);
 
   useEffect(() => {
     setTitle(expense.title);
     setAmount(expense.amount);
-    setMembers(expense.members);
   }, [expense]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onSave({ title, amount, members });
+    onSave({ title, amount });
   };
 
   return (

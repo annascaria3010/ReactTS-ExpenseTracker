@@ -4,7 +4,6 @@ import './List.css';
 interface Expense {
   title: string;
   amount: number;
-  members: string[];
 }
 
 interface ExpenseListProps {

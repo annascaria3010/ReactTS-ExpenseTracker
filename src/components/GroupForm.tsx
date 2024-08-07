@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 
 interface GroupFormProps {
   onCreateGroup: (group: { title: string; members: string[] }) => void;
+  onUpdateGroup: (group: { title: string; members: string[] }) => void; // New prop for updating group
+  initialGroup: { title: string; members: string[] } | null;
+  onNext: () => void;
 }
 
-const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup }) => {
-  const [title, setTitle] = useState('');
-  const [members, setMembers] = useState<string[]>(['']);
+const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup, onUpdateGroup, initialGroup, onNext }) => {
+  const [title, setTitle] = useState(initialGroup ? initialGroup.title : '');
+  const [members, setMembers] = useState(initialGroup ? initialGroup.members : ['']);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    onCreateGroup({ title, members });
-    setTitle('');
-    setMembers(['']);
-  };
-
-  const handleMemberChange = (index: number, value: string) => {
-    const newMembers = [...members];
-    newMembers[index] = value;
-    setMembers(newMembers);
-  };
+  useEffect(() => {
+    if (initialGroup) {
+      setTitle(initialGroup.title);
+      setMembers(initialGroup.members);
+    } else {
+      setTitle('');
+      setMembers(['']);
+    }
+  }, [initialGroup]);
 
   const handleAddMember = () => {
     if (members.length < 6) {
@@ -28,35 +27,45 @@ const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup }) => {
     }
   };
 
+  const handleMemberChange = (index: number, value: string) => {
+    const updatedMembers = [...members];
+    updatedMembers[index] = value;
+    setMembers(updatedMembers);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (initialGroup) {
+      onUpdateGroup({ title, members: members.filter(member => member.trim() !== '') });
+    } else {
+      onCreateGroup({ title, members: members.filter(member => member.trim() !== '') });
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="title">Group Title</label>
+      <div>
+        <label>Group Title:</label>
         <input
           type="text"
-          id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="form-group">
-        <label>Members</label>
+      <div>
+        <label>Members:</label>
         {members.map((member, index) => (
           <input
             key={index}
             type="text"
             value={member}
             onChange={(e) => handleMemberChange(index, e.target.value)}
-            placeholder={`Member ${index + 1}`}
           />
         ))}
-        {members.length < 6 && (
-          <button type="button" onClick={handleAddMember}>
-            Add Member
-          </button>
-        )}
+        {members.length < 6 && <button type="button" onClick={handleAddMember}>Add Member</button>}
       </div>
-      <button type="submit">Create Group</button>
+      <button type="submit">{initialGroup ? 'Update Group' : 'Create Group'}</button>
+      <button type="button" onClick={onNext}>Go to Next</button>
     </form>
   );
 };
