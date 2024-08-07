@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import './Group.css';
+
+interface Group {
+  title: string;
+  members: string[];
+}
 
 interface GroupFormProps {
-  onCreateGroup: (group: { title: string; members: string[] }) => void;
-  onUpdateGroup: (group: { title: string; members: string[] }) => void; // New prop for updating group
-  initialGroup: { title: string; members: string[] } | null;
+  onCreateGroup: (newGroup: Group) => void;
+  onUpdateGroup: (updatedGroup: Group) => void;
+  initialGroup: Group | null;
   onNext: () => void;
 }
 
 const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup, onUpdateGroup, initialGroup, onNext }) => {
-  const [title, setTitle] = useState(initialGroup ? initialGroup.title : '');
-  const [members, setMembers] = useState(initialGroup ? initialGroup.members : ['']);
+  const [title, setTitle] = useState(initialGroup?.title || '');
+  const [members, setMembers] = useState<string[]>(initialGroup?.members || ['']);
+  const [isGroupCreated, setIsGroupCreated] = useState(false);
 
   useEffect(() => {
     if (initialGroup) {
       setTitle(initialGroup.title);
       setMembers(initialGroup.members);
-    } else {
-      setTitle('');
-      setMembers(['']);
     }
   }, [initialGroup]);
-
-  const handleAddMember = () => {
-    if (members.length < 6) {
-      setMembers([...members, '']);
-    }
-  };
 
   const handleMemberChange = (index: number, value: string) => {
     const updatedMembers = [...members];
@@ -33,40 +31,62 @@ const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup, onUpdateGroup, ini
     setMembers(updatedMembers);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (initialGroup) {
-      onUpdateGroup({ title, members: members.filter(member => member.trim() !== '') });
-    } else {
-      onCreateGroup({ title, members: members.filter(member => member.trim() !== '') });
+  const addMember = () => {
+    if (members.length < 6) {
+      setMembers([...members, '']);
     }
   };
 
+  const handleSubmit = () => {
+    if (!title.trim()) {
+      alert('Group title cannot be empty.');
+      return;
+    }
+    const newGroup = { title, members: members.filter(member => member.trim() !== '') }; // Filter out empty members
+    if (initialGroup) {
+      onUpdateGroup(newGroup);
+    } else {
+      onCreateGroup(newGroup);
+      setIsGroupCreated(true); // Mark group as created
+    }
+    setTitle('');
+    setMembers(['']); // Reset to a single member input for new group
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Group Title:</label>
+    <div className="group-form">
+      <h2>{initialGroup ? 'Edit Group' : 'Create Group'}</h2>
+      <div className="form-group">
+        <label htmlFor="title">Group Title:</label>
         <input
           type="text"
+          id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div>
+      <div className="form-group">
         <label>Members:</label>
-        {members.map((member, index) => (
-          <input
-            key={index}
-            type="text"
-            value={member}
-            onChange={(e) => handleMemberChange(index, e.target.value)}
-          />
-        ))}
-        {members.length < 6 && <button type="button" onClick={handleAddMember}>Add Member</button>}
+        <div className="members-inputs">
+          {members.map((member, index) => (
+            <input
+              key={index}
+              type="text"
+              value={member}
+              onChange={(e) => handleMemberChange(index, e.target.value)}
+              placeholder={`Member ${index + 1}`}
+            />
+          ))}
+        </div>
+        {members.length < 6 && (
+          <button onClick={addMember} className="add-member-button">Add Member</button>
+        )}
       </div>
-      <button type="submit">{initialGroup ? 'Update Group' : 'Create Group'}</button>
-      <button type="button" onClick={onNext}>Go to Next</button>
-    </form>
+      <button onClick={handleSubmit}>{initialGroup ? 'Update Group' : 'Create Group'}</button>
+      {isGroupCreated && (
+        <button onClick={onNext}>Go to Expenses</button>
+      )}
+    </div>
   );
 };
 

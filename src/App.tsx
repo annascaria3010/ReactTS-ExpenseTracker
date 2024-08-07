@@ -3,6 +3,7 @@ import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import EditExpenseForm from './components/EditExpense';
 import GroupForm from './components/GroupForm';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css'; // Import the CSS file
 
 interface Expense {
@@ -130,7 +131,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1 className="header">
+      <h1 className='header' >
         {(view === View.ExpenseForm || view === View.GroupForm) && (
           <button onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} className="go-back-button">
             Go Back
@@ -140,7 +141,10 @@ const App: React.FC = () => {
       </h1>
       {view === View.Initial && (
         <>
-          <button onClick={handleAddGroupClick}>Add Group</button>
+          <p className="message">Click on the plus to create a group</p>
+          <button onClick={handleAddGroupClick} className="add-group-button">
+          <i className="fas fa-plus"> </i>
+          </button>
           <div className="group-list">
             {groups.map((group, index) => (
               <div key={index} className="group-item" onClick={() => handleGroupClick(group)}>

@@ -1,12 +1,30 @@
-/* App.css */
+
 .header {
+  color: red;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  
 }
 
+.add-group-button {
+  position: fixed;
+  bottom: 30px; /* Distance from the bottom */
+  right: 30px; /* Distance from the right */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem; /* Adjust size as needed */
+  color: white; /* Set color for the icon */
+  background-color: red;
+}
+ .message{
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+ }
 .go-back-button {
-  margin-right: 10px;
+  margin-right: 20px;
   padding: 5px 10px;
   font-size: 16px;
   cursor: pointer;

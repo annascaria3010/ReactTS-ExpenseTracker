@@ -18,8 +18,8 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit })
       {expenses.map((expense, index) => (
         <li key={index} className="expense-item">
           <div>
-            <span className="expense-item-title">{expense.title}</span>
-            <span className="expense-item-amount">${expense.amount.toFixed(2)}</span>
+            <span className="expense-item-title">{expense.title}: </span>
+            <span className="expense-item-amount">Rs. {expense.amount.toFixed(2)}</span>
           </div>
           <div className="expense-item-buttons">
             <button

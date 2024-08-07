@@ -17,9 +17,10 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAddExpense }) => {
   };
 
   return (
+    <div className='expense-form'>
     <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="title">Title</label>
+      <div className="title">
+        <label htmlFor="title">Title: </label>
         <input
           type="text"
           id="title"
@@ -27,8 +28,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAddExpense }) => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="amount">Amount</label>
+      <div className="amount">
+        <label htmlFor="amount">Amount: </label>
         <input
           type="number"
           id="amount"
@@ -38,6 +39,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onAddExpense }) => {
       </div>
       <button type="submit">Add Expense</button>
     </form>
+    </div>
   );
 };
 

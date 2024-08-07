@@ -1,5 +1,11 @@
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title{
-color: #ccc;
+color: #080808;
 padding-bottom: 10px;
 font-size: 20px;
 margin-bottom: 1em;
@@ -7,7 +13,7 @@ margin-bottom: 1em;
 }
  
 .amount{
-color: #ccc; 
+color: #060606; 
 padding-bottom: 30px;
 font-size: 20px;
 margin-bottom: 1em;
