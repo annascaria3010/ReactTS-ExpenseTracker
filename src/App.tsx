@@ -92,7 +92,6 @@ const App: React.FC = () => {
         group.title === currentGroup.title ? updatedGroup : group
       ));
       setCurrentGroup(updatedGroup);
-      // If navigating to the expense form, keep existing expenses
       setView(View.ExpenseForm);
     }
   };
@@ -131,9 +130,31 @@ const App: React.FC = () => {
     }
   };
 
+  // Function to calculate the total expenses for a group
+  const calculateTotalExpense = (group: Group) => {
+    return expenses
+      .filter(expense => expense.members.some(member => group.members.includes(member)))
+      .reduce((total, expense) => total + expense.amount, 0);
+  };
+
+  const getOwesList = (group: Group) => {
+    return expenses
+      .filter(expense => expense.members.some(member => group.members.includes(member)))
+      .flatMap(expense =>
+        expense.members
+          .filter(member => member !== expense.paidBy)
+          .map(member => ({
+            payer: expense.paidBy,
+            member,
+            amount: (expense.amount / expense.members.length).toFixed(2),
+            title: expense.title // Include the expense title in the output
+          }))
+      );
+  };
+
   return (
     <div>
-      <h1 className='header' >
+      <h1 className='header'>
         {(view === View.ExpenseForm || view === View.GroupForm) && (
           <button onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} className="go-back-button">
             Go Back
@@ -151,12 +172,24 @@ const App: React.FC = () => {
             {groups.map((group, index) => (
               <div key={index} className="group-item" onClick={() => handleGroupClick(group)}>
                 <div className="group-details">
-                  <h2>{group.title}</h2>
+                  <h2>
+                    {group.title}
+                    <span className="total-expense">
+                      Rs. {calculateTotalExpense(group).toFixed(2)}
+                    </span>
+                  </h2>
                   <ul>
                     {group.members.map((member, i) => (
                       <li key={i}>{member}</li>
                     ))}
                   </ul>
+                  <div className="owes-list">
+                    {getOwesList(group).map((oweItem, i) => (
+                      <p key={i} className="owes-item">
+                        {oweItem.member} owes {oweItem.payer} Rs. {oweItem.amount} for {oweItem.title}
+                      </p>
+                    ))}
+                  </div>
                 </div>
                 <button onClick={(e) => {
                   e.stopPropagation(); // Prevent triggering group click

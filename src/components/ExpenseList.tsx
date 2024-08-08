@@ -16,54 +16,69 @@ interface ExpenseListProps {
 }
 
 const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit, members }) => {
-  return (
-    <ul>
-      {expenses.map((expense, index) => {
-        const numMembers = expense.members.length;
-        const amountPerMember = numMembers > 0 ? expense.amount / numMembers : 0;
+  // Calculate the total expenses
+  const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
 
-        return (
-          <li key={index} className="expense-item">
-            <div className="display">
-              <div>
-                <span className="expense-item-title">{expense.title}: </span>
-                <span className="expense-item-amount">
-                  Rs. {expense.amount.toFixed(2)} (Split with: {expense.members.join(', ')})
-                </span>
+  return (
+    <div className="expense-list-container">
+      {/* Display the total expenses at the top */}
+      <div className="total-expenses">
+        <h2>Total Expenses: Rs. {totalExpenses.toFixed(2)}</h2>
+      </div>
+
+      <ul>
+        {expenses.map((expense, index) => {
+          const numMembers = expense.members.length;
+          const amountPerMember = numMembers > 0 ? expense.amount / numMembers : 0;
+
+          return (
+            <li key={index} className="expense-item">
+              <div className="display">
+                <div>
+                  <span className="expense-item-title">{expense.title}: </span>
+                  <span className="expense-item-amount">
+                    Rs. {expense.amount.toFixed(2)} (Split with: {expense.members.join(', ')})
+                  </span>
+                </div>
+                <div className="expense-item-details">
+                  {numMembers > 0 && (
+                    <>
+                      <p>PER PERSON: Rs. {amountPerMember.toFixed(2)}</p>
+                      <div className="owes-container">
+                        <strong>Owes:</strong>
+                        <ul>
+                          {expense.members
+                            .filter(member => member !== expense.paidBy)
+                            .map((member, i) => (
+                              <li key={i} className="owes-item">
+                                {member} owes {expense.paidBy} Rs. {amountPerMember.toFixed(2)}
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="expense-item-details">
-                {numMembers > 0 && (
-                  <>
-                    <p>PER PERSON: Rs. {amountPerMember.toFixed(2)}</p>
-                    <p>
-                      <strong>Owes:</strong>{' '}
-                      {expense.members
-                        .filter(member => member !== expense.paidBy)
-                        .map(member => `${member} owes Rs. ${amountPerMember.toFixed(2)} to ${expense.paidBy}`)
-                        .join(', ')}
-                    </p>
-                  </>
-                )}
+              <div className="expense-item-buttons">
+                <button
+                  className="expense-item-edit"
+                  onClick={() => onEdit(index)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="expense-item-delete"
+                  onClick={() => onDelete(index)}
+                >
+                  Delete
+                </button>
               </div>
-            </div>
-            <div className="expense-item-buttons">
-              <button
-                className="expense-item-edit"
-                onClick={() => onEdit(index)}
-              >
-                Edit
-              </button>
-              <button
-                className="expense-item-delete"
-                onClick={() => onDelete(index)}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 

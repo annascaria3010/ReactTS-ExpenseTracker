@@ -30,6 +30,12 @@
   cursor: pointer;
 }
 
+.total-expense {
+  float: right;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
 .group-list {
   margin-top: 20px;
 }

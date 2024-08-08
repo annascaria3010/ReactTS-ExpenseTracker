@@ -57,25 +57,27 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, members }) => {
   return (
     <div className="expense-form">
       <h2>Add Expense</h2>
-      <div className="title">
-        <label htmlFor="expense-title">Title:</label>
-        <input
-          type="text"
-          id="expense-title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+      <div className="input-row">
+        <div className="input-group">
+          <label htmlFor="expense-title">Title:</label>
+          <input
+            type="text"
+            id="expense-title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="expense-amount">Amount:</label>
+          <input
+            type="number"
+            id="expense-amount"
+            value={amount === undefined ? '' : amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+        </div>
       </div>
-      <div className="title">
-        <label htmlFor="expense-amount">Amount:</label>
-        <input
-          type="number"
-          id="expense-amount"
-          value={amount === undefined ? '' : amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
-        />
-      </div>
-      <div className="title">
+      <div className="input-group">
         <label htmlFor="paid-by">Who Paid:</label>
         <select
           id="paid-by"
