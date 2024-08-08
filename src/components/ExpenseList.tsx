@@ -23,16 +23,18 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit, m
 
         return (
           <li key={index} className="expense-item">
+            <div className='display'>
             <div>
               <span className="expense-item-title">{expense.title}: </span>
               <span className="expense-item-amount">
-                Rs. {expense.amount.toFixed(2)} (Split with {numMembers} member{numMembers > 1 ? 's' : ''})
+                Rs. {expense.amount.toFixed(2)} (Split with: {expense.members.join(', ')})
               </span>
             </div>
             <div className="expense-item-details">
               {numMembers > 0 && (
-                <p>Amount per member: Rs. {amountPerMember.toFixed(2)}</p>
+                <p>PER PERSON: Rs. {amountPerMember.toFixed(2)}</p>
               )}
+            </div>
             </div>
             <div className="expense-item-buttons">
               <button

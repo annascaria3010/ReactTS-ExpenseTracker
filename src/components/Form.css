@@ -43,7 +43,6 @@ input {
     display: flex;
   flex-direction: column;
 }
-
   .member-option {
     display: flex;
     align-items: center;

@@ -12,10 +12,15 @@
   }
   
   .expense-item-amount {
-    color: #fb0909;
+    color: #010101;
     padding-right: 25px;
   }
   
+  .expense-item-details {
+    color: #020202;
+    padding-right: 25px;
+  }
+
   .expense-item-delete {
     background-color: #fa0404;
     color: white;
