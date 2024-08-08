@@ -5,6 +5,7 @@ interface Expense {
   title: string;
   amount: number;
   members: string[];
+  paidBy: string; // New property to track who paid
 }
 
 interface ExpenseListProps {
@@ -23,18 +24,27 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit, m
 
         return (
           <li key={index} className="expense-item">
-            <div className='display'>
-            <div>
-              <span className="expense-item-title">{expense.title}: </span>
-              <span className="expense-item-amount">
-                Rs. {expense.amount.toFixed(2)} (Split with: {expense.members.join(', ')})
-              </span>
-            </div>
-            <div className="expense-item-details">
-              {numMembers > 0 && (
-                <p>PER PERSON: Rs. {amountPerMember.toFixed(2)}</p>
-              )}
-            </div>
+            <div className="display">
+              <div>
+                <span className="expense-item-title">{expense.title}: </span>
+                <span className="expense-item-amount">
+                  Rs. {expense.amount.toFixed(2)} (Split with: {expense.members.join(', ')})
+                </span>
+              </div>
+              <div className="expense-item-details">
+                {numMembers > 0 && (
+                  <>
+                    <p>PER PERSON: Rs. {amountPerMember.toFixed(2)}</p>
+                    <p>
+                      <strong>Owes:</strong>{' '}
+                      {expense.members
+                        .filter(member => member !== expense.paidBy)
+                        .map(member => `${member} owes Rs. ${amountPerMember.toFixed(2)} to ${expense.paidBy}`)
+                        .join(', ')}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
             <div className="expense-item-buttons">
               <button

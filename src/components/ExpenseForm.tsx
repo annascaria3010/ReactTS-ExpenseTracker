@@ -6,6 +6,7 @@ interface Expense {
   title: string;
   amount: number;
   members: string[];
+  paidBy: string; // New property to track who paid
 }
 
 interface ExpenseFormProps {
@@ -17,21 +18,32 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, members }) => {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [paidBy, setPaidBy] = useState<string>(''); // State to track who paid
 
   const handleSubmit = () => {
-    if (!title.trim() || amount === undefined || amount <= 0 || selectedMembers.length === 0) {
+    if (
+      !title.trim() ||
+      amount === undefined ||
+      amount <= 0 ||
+      selectedMembers.length === 0 ||
+      !paidBy
+    ) {
       alert('Please fill in all fields correctly.');
       return;
     }
+
     const newExpense: Expense = {
       title,
       amount,
-      members: selectedMembers
+      members: selectedMembers,
+      paidBy,
     };
+
     onSubmit(newExpense);
     setTitle('');
     setAmount(undefined);
     setSelectedMembers([]);
+    setPaidBy('');
   };
 
   const handleMemberSelect = (member: string) => {
@@ -54,7 +66,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, members }) => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="amount">
+      <div className="title">
         <label htmlFor="expense-amount">Amount:</label>
         <input
           type="number"
@@ -64,7 +76,22 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, members }) => {
         />
       </div>
       <div className="title">
-        <label htmlFor="split-with">Split with:</label>
+        <label htmlFor="paid-by">Who Paid:</label>
+        <select
+          id="paid-by"
+          value={paidBy}
+          onChange={(e) => setPaidBy(e.target.value)}
+        >
+          <option value="">Select a member</option>
+          {members.map((member, index) => (
+            <option key={index} value={member}>
+              {member}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="split-with">
+        <label>Split with:</label>
         <div id="split-with">
           {members.map((member, index) => (
             <div
@@ -79,8 +106,9 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit, members }) => {
         </div>
         <p>Selected members: {selectedMembers.length}</p>
       </div>
-      <button className='add-button'
-      onClick={handleSubmit}>Add Expense</button>
+      <button className="add-button" onClick={handleSubmit}>
+        Add Expense
+      </button>
     </div>
   );
 };

@@ -6,6 +6,8 @@ interface Expense {
   title: string;
   amount: number;
   members: string[];
+  paidBy: string;
+  
 }
 
 interface EditExpenseFormProps {
@@ -19,11 +21,13 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(expense.amount);
   const [selectedMembers, setSelectedMembers] = useState<string[]>(expense.members);
-
+  const [paidBy, setPaidBy] = useState<string>(expense.paidBy); // Include paidBy in state
+  
   useEffect(() => {
     setTitle(expense.title);
     setAmount(expense.amount);
     setSelectedMembers(expense.members);
+    setPaidBy(expense.paidBy);
   }, [expense]);
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -32,7 +36,7 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
       alert('Please fill in all fields correctly.');
       return;
     }
-    onSave({ title, amount, members: selectedMembers });
+    onSave({ title, amount, members: selectedMembers,paidBy });
   };
 
   const handleMemberSelect = (member: string) => {

@@ -10,6 +10,7 @@ interface Expense {
   title: string;
   amount: number;
   members: string[];
+  paidBy: string;
 }
 
 interface Group {
