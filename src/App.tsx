@@ -9,6 +9,7 @@ import './App.css'; // Import the CSS file
 interface Expense {
   title: string;
   amount: number;
+  members: string[];
 }
 
 interface Group {
@@ -143,7 +144,7 @@ const App: React.FC = () => {
         <>
           <p className="message">Click on the plus to create a group</p>
           <button onClick={handleAddGroupClick} className="add-group-button">
-          <i className="fas fa-plus"> </i>
+            <i className="fas fa-plus"> </i>
           </button>
           <div className="group-list">
             {groups.map((group, index) => (
@@ -170,7 +171,7 @@ const App: React.FC = () => {
       {view === View.GroupForm && (
         <GroupForm
           onCreateGroup={handleCreateGroup}
-          onUpdateGroup={handleUpdateGroup} // Pass handleUpdateGroup function
+          onUpdateGroup={handleUpdateGroup}
           initialGroup={currentGroup}
           onNext={handleGoToNext}
         />
@@ -182,14 +183,19 @@ const App: React.FC = () => {
               expense={expenses[currentExpenseIndex]}
               onSave={handleSaveExpense}
               onCancel={handleCancelEdit}
+              members={currentGroup ? currentGroup.members : []} // Pass members prop
             />
           ) : (
-            <ExpenseForm onAddExpense={handleAddExpense} />
+            <ExpenseForm
+              onSubmit={handleAddExpense}
+              members={currentGroup ? currentGroup.members : []} // Pass members prop
+            />
           )}
           <ExpenseList
             expenses={expenses}
             onDelete={handleDeleteExpense}
             onEdit={handleEditExpense}
+            members={currentGroup?.members || []} // Pass the current group's members
           />
         </>
       )}

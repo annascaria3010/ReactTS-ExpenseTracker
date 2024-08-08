@@ -38,3 +38,45 @@ input {
     border-radius: 4px; /* Add rounded corners */
     box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
   }
+
+  #split-with {
+    display: flex;
+  flex-direction: column;
+}
+
+  .member-option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .member-option:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .member-option i {
+    margin-right: 10px;
+  }
+  
+  .selected i {
+    color: green;
+  }
+  
+  .selected {
+    font-weight: bold;
+  }
+  
+  button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
