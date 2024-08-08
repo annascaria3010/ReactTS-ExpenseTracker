@@ -7,7 +7,6 @@ interface Expense {
   amount: number;
   members: string[];
   paidBy: string;
-  
 }
 
 interface EditExpenseFormProps {
@@ -21,8 +20,8 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(expense.amount);
   const [selectedMembers, setSelectedMembers] = useState<string[]>(expense.members);
-  const [paidBy, setPaidBy] = useState<string>(expense.paidBy); // Include paidBy in state
-  
+  const [paidBy, setPaidBy] = useState<string>(expense.paidBy);
+
   useEffect(() => {
     setTitle(expense.title);
     setAmount(expense.amount);
@@ -32,11 +31,11 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!title.trim() || amount <= 0 || selectedMembers.length === 0) {
+    if (!title.trim() || amount <= 0 || selectedMembers.length === 0 || !paidBy.trim()) {
       alert('Please fill in all fields correctly.');
       return;
     }
-    onSave({ title, amount, members: selectedMembers,paidBy });
+    onSave({ title, amount, members: selectedMembers, paidBy });
   };
 
   const handleMemberSelect = (member: string) => {
@@ -85,8 +84,23 @@ const EditExpenseForm: React.FC<EditExpenseFormProps> = ({ expense, onSave, onCa
           </div>
           <p>Selected members: {selectedMembers.length}</p>
         </div>
+        <div className="form-group">
+          <label htmlFor="paid-by">Who Paid:</label>
+          <select
+            id="paid-by"
+            value={paidBy}
+            onChange={(e) => setPaidBy(e.target.value)}
+          >
+            <option value="" disabled>Select who paid</option>
+            {members.map((member, index) => (
+              <option key={index} value={member}>
+                {member}
+              </option>
+            ))}
+          </select>
+        </div>
         <button className="add-button" type="submit">Save</button>
-        <button className='cancel-button' type="button" onClick={onCancel}>Cancel</button>
+        <button className="cancel-button" type="button" onClick={onCancel}>Cancel</button>
       </form>
     </div>
   );
