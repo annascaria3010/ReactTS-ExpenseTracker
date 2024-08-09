@@ -24,9 +24,15 @@
   margin-top: 100px;
  }
 .go-back-button {
-  margin-right: 20px;
-  padding: 5px 10px;
-  font-size: 16px;
+  position: absolute;
+  left: 80px;
+  margin-top: px;
+  transform: translateY(-50%);
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
   cursor: pointer;
 }
 

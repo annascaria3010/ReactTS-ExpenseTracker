@@ -154,14 +154,14 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1 className='header'>
+      <h1 >
         {(view === View.ExpenseForm || view === View.GroupForm) && (
           <button className="go-back-button"
           onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} >
             Go Back
           </button>
         )}
-        Expense Tracker
+        <span className="header">Expense Tracker</span>
       </h1>
       {view === View.Initial && (
         <>
