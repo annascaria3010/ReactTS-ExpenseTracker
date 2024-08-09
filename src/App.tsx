@@ -156,7 +156,8 @@ const App: React.FC = () => {
     <div>
       <h1 className='header'>
         {(view === View.ExpenseForm || view === View.GroupForm) && (
-          <button onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} className="go-back-button">
+          <button className="go-back-button"
+          onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} >
             Go Back
           </button>
         )}
