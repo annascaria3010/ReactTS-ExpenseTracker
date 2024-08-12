@@ -4,7 +4,7 @@ import ExpenseList from './components/ExpenseList';
 import EditExpenseForm from './components/EditExpense';
 import GroupForm from './components/GroupForm';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import './App.css'; // Import the CSS file
+import './App.css';
 
 interface Expense {
   title: string;
@@ -16,7 +16,7 @@ interface Expense {
 interface Group {
   title: string;
   members: string[];
-  backgroundColor?: string; // Add an optional backgroundColor property
+  backgroundColor?: string;
 }
 
 enum View {
@@ -26,34 +26,44 @@ enum View {
 }
 
 const App: React.FC = () => {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [groupExpenses, setGroupExpenses] = useState<Record<string, Expense[]>>({});
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentExpenseIndex, setCurrentExpenseIndex] = useState<number | null>(null);
   const [view, setView] = useState<View>(View.Initial);
 
   useEffect(() => {
-    const savedExpenses = localStorage.getItem('expenses');
     const savedGroups = localStorage.getItem('groups');
-    if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
+    const savedGroupExpenses = localStorage.getItem('groupExpenses');
     if (savedGroups) setGroups(JSON.parse(savedGroups));
+    if (savedGroupExpenses) setGroupExpenses(JSON.parse(savedGroupExpenses));
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-  }, [expenses]);
 
   useEffect(() => {
     localStorage.setItem('groups', JSON.stringify(groups));
   }, [groups]);
 
+  useEffect(() => {
+    localStorage.setItem('groupExpenses', JSON.stringify(groupExpenses));
+  }, [groupExpenses]);
+
   const handleAddExpense = (expense: Expense) => {
-    setExpenses((prevExpenses) => [...prevExpenses, expense]);
+    if (currentGroup) {
+      setGroupExpenses((prevGroupExpenses) => ({
+        ...prevGroupExpenses,
+        [currentGroup.title]: [...(prevGroupExpenses[currentGroup.title] || []), expense],
+      }));
+    }
   };
 
   const handleDeleteExpense = (index: number) => {
-    setExpenses((prevExpenses) => prevExpenses.filter((_, i) => i !== index));
+    if (currentGroup) {
+      setGroupExpenses((prevGroupExpenses) => ({
+        ...prevGroupExpenses,
+        [currentGroup.title]: prevGroupExpenses[currentGroup.title].filter((_, i) => i !== index),
+      }));
+    }
   };
 
   const handleEditExpense = (index: number) => {
@@ -62,10 +72,13 @@ const App: React.FC = () => {
   };
 
   const handleSaveExpense = (updatedExpense: Expense) => {
-    if (currentExpenseIndex !== null) {
-      setExpenses((prevExpenses) => prevExpenses.map((expense, index) =>
-        index === currentExpenseIndex ? updatedExpense : expense
-      ));
+    if (currentGroup && currentExpenseIndex !== null) {
+      setGroupExpenses((prevGroupExpenses) => ({
+        ...prevGroupExpenses,
+        [currentGroup.title]: prevGroupExpenses[currentGroup.title].map((expense, index) =>
+          index === currentExpenseIndex ? updatedExpense : expense
+        ),
+      }));
       setIsEditing(false);
       setCurrentExpenseIndex(null);
     }
@@ -86,8 +99,11 @@ const App: React.FC = () => {
       backgroundColor: getRandomColor(),
     };
     setGroups((prevGroups) => [...prevGroups, groupWithColor]);
+    setGroupExpenses((prevGroupExpenses) => ({
+      ...prevGroupExpenses,
+      [groupWithColor.title]: [], // Initialize expenses for the new group
+    }));
     setCurrentGroup(groupWithColor);
-    setExpenses([]); // Reset expenses for the new group
     setView(View.ExpenseForm);
   };
 
@@ -96,19 +112,33 @@ const App: React.FC = () => {
       setGroups((prevGroups) => prevGroups.map(group =>
         group.title === currentGroup.title ? { ...updatedGroup, backgroundColor: currentGroup.backgroundColor } : group
       ));
+      setGroupExpenses((prevGroupExpenses) => {
+        const { [currentGroup.title]: removedGroup, ...rest } = prevGroupExpenses;
+        return {
+          ...rest,
+          [updatedGroup.title]: removedGroup || [], // Keep expenses for the updated group title
+        };
+      });
       setCurrentGroup(updatedGroup);
       setView(View.ExpenseForm);
     }
   };
 
   const handleDeleteGroup = (index: number) => {
-    setGroups((prevGroups) => prevGroups.filter((_, i) => i !== index));
+    const groupToDelete = groups[index];
+    if (groupToDelete) {
+      setGroups((prevGroups) => prevGroups.filter((_, i) => i !== index));
+      setGroupExpenses((prevGroupExpenses) => {
+        const { [groupToDelete.title]: _, ...rest } = prevGroupExpenses;
+        return rest;
+      });
+    }
   };
 
   const handleGoBack = () => {
     if (currentGroup) {
-      localStorage.setItem('expenses', JSON.stringify(expenses));
       localStorage.setItem('groups', JSON.stringify(groups));
+      localStorage.setItem('groupExpenses', JSON.stringify(groupExpenses));
     }
     setView(View.GroupForm);
   };
@@ -118,14 +148,12 @@ const App: React.FC = () => {
   };
 
   const handleAddGroupClick = () => {
-    setCurrentGroup(null); // Reset currentGroup to clear the form
+    setCurrentGroup(null);
     setView(View.GroupForm);
   };
 
   const handleGroupClick = (group: Group) => {
     setCurrentGroup(group);
-    const savedExpenses = localStorage.getItem('expenses');
-    if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
     setView(View.ExpenseForm);
   };
 
@@ -137,13 +165,11 @@ const App: React.FC = () => {
 
   // Function to calculate the total expenses for a group
   const calculateTotalExpense = (group: Group) => {
-    return expenses
-      .filter(expense => expense.members.some(member => group.members.includes(member)))
-      .reduce((total, expense) => total + expense.amount, 0);
+    return (groupExpenses[group.title] || []).reduce((total, expense) => total + expense.amount, 0);
   };
 
   const getOwesList = (group: Group) => {
-    return expenses
+    return (groupExpenses[group.title] || [])
       .filter(expense => expense.members.some(member => group.members.includes(member)))
       .flatMap(expense =>
         expense.members
@@ -152,7 +178,7 @@ const App: React.FC = () => {
             payer: expense.paidBy,
             member,
             amount: (expense.amount / expense.members.length).toFixed(2),
-            title: expense.title // Include the expense title in the output
+            title: expense.title
           }))
       );
   };
@@ -171,8 +197,7 @@ const App: React.FC = () => {
     <div>
       <h1>
         {(view === View.ExpenseForm || view === View.GroupForm) && (
-          <button className="go-back-button"
-          onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} >
+          <button className="go-back-button" onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial}>
             Go Back
           </button>
         )}
@@ -182,7 +207,7 @@ const App: React.FC = () => {
         <>
           <p className="message">Click on the plus to create a group</p>
           <button onClick={handleAddGroupClick} className="add-group-button">
-            <i className="fas fa-plus"> </i>
+            <i className="fas fa-plus"></i>
           </button>
           <div className="group-list">
             {groups.map((group, index) => (
@@ -190,7 +215,7 @@ const App: React.FC = () => {
                 key={index}
                 className="group-item"
                 onClick={() => handleGroupClick(group)}
-                style={{ backgroundColor: group.backgroundColor }} // Apply the random background color
+                style={{ backgroundColor: group.backgroundColor }}
               >
                 <div className="group-details">
                   <h2>
@@ -232,28 +257,29 @@ const App: React.FC = () => {
         />
       )}
       {view === View.ExpenseForm && (
-        <>
-          {isEditing && currentExpenseIndex !== null ? (
-            <EditExpenseForm
-              expense={expenses[currentExpenseIndex]}
-              onSave={handleSaveExpense}
-              onCancel={handleCancelEdit}
-              members={currentGroup ? currentGroup.members : []} // Pass members prop
-            />
-          ) : (
-            <ExpenseForm
-              onSubmit={handleAddExpense}
-              members={currentGroup ? currentGroup.members : []} // Pass members prop
-            />
-          )}
-          <ExpenseList
-            expenses={expenses}
-            onDelete={handleDeleteExpense}
-            onEdit={handleEditExpense}
-            members={currentGroup?.members || []} // Pass the current group's members
-          />
-        </>
-      )}
+  <>
+    {isEditing && currentExpenseIndex !== null ? (
+      <EditExpenseForm
+        expense={groupExpenses[(currentGroup as Group).title][currentExpenseIndex]} // Ensure this is a valid `Expense`
+        onSave={handleSaveExpense}
+        onCancel={handleCancelEdit}
+        members={(currentGroup as Group).members}
+      />
+    ) : (
+      <ExpenseForm
+        onSubmit={handleAddExpense}
+        members={(currentGroup as Group).members}
+      />
+    )}
+    <ExpenseList
+      expenses={groupExpenses[(currentGroup as Group).title] || []} // Use expenses for the current group
+      onDelete={handleDeleteExpense}
+      onEdit={handleEditExpense}
+      members={(currentGroup as Group).members}
+    />
+  </>
+)}
+
     </div>
   );
 };

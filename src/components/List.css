@@ -9,11 +9,17 @@
   margin-bottom: 20px;
 }
 
+ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
 .expense-item {
   margin-bottom: 10px;
   padding: 15px; /* Adjust the padding as needed */
   border-radius: 5px;
-  color: #333; /* Ensure text color contrasts with background */
+  color: #080808; /* Ensure text color contrasts with background */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease; /* Optional: add smooth transition for background color */
 }
