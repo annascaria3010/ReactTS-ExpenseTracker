@@ -38,10 +38,18 @@ const GroupForm: React.FC<GroupFormProps> = ({ onCreateGroup, onUpdateGroup, ini
   };
 
   const handleSubmit = () => {
+    const nonEmptyMembers = members.filter(member => member.trim() !== '');
+
     if (!title.trim()) {
       alert('Group title cannot be empty.');
       return;
     }
+
+    if (nonEmptyMembers.length === 0) {
+      alert('You must add at least one member to the group.');
+      return;
+    }
+    
     const newGroup = { title, members: members.filter(member => member.trim() !== '') }; // Filter out empty members
     if (initialGroup) {
       onUpdateGroup(newGroup);

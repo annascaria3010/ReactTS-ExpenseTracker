@@ -16,6 +16,7 @@ interface Expense {
 interface Group {
   title: string;
   members: string[];
+  backgroundColor?: string; // Add an optional backgroundColor property
 }
 
 enum View {
@@ -80,8 +81,12 @@ const App: React.FC = () => {
       alert('Group title cannot be empty.');
       return;
     }
-    setGroups((prevGroups) => [...prevGroups, newGroup]);
-    setCurrentGroup(newGroup);
+    const groupWithColor = {
+      ...newGroup,
+      backgroundColor: getRandomColor(),
+    };
+    setGroups((prevGroups) => [...prevGroups, groupWithColor]);
+    setCurrentGroup(groupWithColor);
     setExpenses([]); // Reset expenses for the new group
     setView(View.ExpenseForm);
   };
@@ -89,7 +94,7 @@ const App: React.FC = () => {
   const handleUpdateGroup = (updatedGroup: Group) => {
     if (currentGroup) {
       setGroups((prevGroups) => prevGroups.map(group =>
-        group.title === currentGroup.title ? updatedGroup : group
+        group.title === currentGroup.title ? { ...updatedGroup, backgroundColor: currentGroup.backgroundColor } : group
       ));
       setCurrentGroup(updatedGroup);
       setView(View.ExpenseForm);
@@ -152,9 +157,19 @@ const App: React.FC = () => {
       );
   };
 
+  // Helper function to generate a random color
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+
   return (
     <div>
-      <h1 >
+      <h1>
         {(view === View.ExpenseForm || view === View.GroupForm) && (
           <button className="go-back-button"
           onClick={view === View.ExpenseForm ? handleGoBack : handleGoBackToInitial} >
@@ -171,7 +186,12 @@ const App: React.FC = () => {
           </button>
           <div className="group-list">
             {groups.map((group, index) => (
-              <div key={index} className="group-item" onClick={() => handleGroupClick(group)}>
+              <div
+                key={index}
+                className="group-item"
+                onClick={() => handleGroupClick(group)}
+                style={{ backgroundColor: group.backgroundColor }} // Apply the random background color
+              >
                 <div className="group-details">
                   <h2>
                     {group.title}
