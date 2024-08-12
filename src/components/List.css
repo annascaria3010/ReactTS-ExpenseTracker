@@ -1,77 +1,62 @@
+/* List.css */
+
+.expense-list-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.total-expenses {
+  margin-bottom: 20px;
+}
+
 .expense-item {
-    display: flex;
-    justify-content: center;
-    padding: 0.5em;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .expense-item-title {
-    color: #0b0b0b;
-    font-weight: bold;
-    padding-right: 15px;
-  }
-  
-  .expense-item-amount {
-    color: #010101;
-    padding-right: 25px;
-  }
-  
-  .expense-item-details {
-    color: #020202;
-    padding-right: 25px;
-  }
+  margin-bottom: 10px;
+  padding: 15px; /* Adjust the padding as needed */
+  border-radius: 5px;
+  color: #333; /* Ensure text color contrasts with background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease; /* Optional: add smooth transition for background color */
+}
 
-  .expense-item-delete {
-    background-color: #fa0404;
-    color: white;
-    border: none;
-    padding: 0.3em 0.6em;
-    cursor: pointer;
-    border-radius: 3px;
-    margin-right: 15px;
-  }
+.expense-item-title {
+  font-weight: bold;
+}
 
-  .expense-item-edit {
-    background-color: #2dfa04;
-    color: white;
-    border: none;
-    padding: 0.3em 0.6em;
-    cursor: pointer;
-    border-radius: 3px;
-    margin-right: 15px;
-  }
+.expense-item-amount {
+  color: #000000;
+}
 
-  .owns-display{
-    display: flex;
-    flex-direction: column;
-  }
+.expense-item-details {
+  margin-top: 10px;
+}
 
-  .owes-container {
-    margin-top: 10px;
-  }
-  
-  .owes-container strong {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .owes-container ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  
-  .owes-item {
-    margin-bottom: 5px;
-    font-size: 14px;
-  }
-  
-  .owes-item::before {
-    content: "•";
-    margin-right: 5px;
-    color: #333;
-  }
+.owes-container {
+  margin-top: 10px;
+}
 
-  .total-expenses{
-    margin-left: 25px;
-  }
+.owes-item {
+  margin-bottom: 5px;
+}
+
+.expense-item-buttons {
+  margin-top: 10px;
+}
+
+.expense-item-edit,
+.expense-item-delete {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.expense-item-edit {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.expense-item-delete {
+  background-color: #f44336;
+  color: white;
+}

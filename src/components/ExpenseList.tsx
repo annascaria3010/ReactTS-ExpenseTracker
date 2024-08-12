@@ -1,6 +1,16 @@
 import React from 'react';
 import './List.css';
 
+// Function to generate a random color in hex format
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 interface Expense {
   title: string;
   amount: number;
@@ -30,9 +40,14 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onDelete, onEdit, m
         {expenses.map((expense, index) => {
           const numMembers = expense.members.length;
           const amountPerMember = numMembers > 0 ? expense.amount / numMembers : 0;
+          const backgroundColor = getRandomColor(); // Get a random color for each expense item
 
           return (
-            <li key={index} className="expense-item">
+            <li
+              key={index}
+              className="expense-item"
+              style={{ backgroundColor }}
+            >
               <div className="display">
                 <div>
                   <span className="expense-item-title">{expense.title}: </span>
